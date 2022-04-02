@@ -1,0 +1,54 @@
+version: '3.5'
+
+services:
+  database:
+    image: postgres:14
+    container_name: database
+    environment:
+      POSTGRES_USER: ${POSTGRESQL_USER:-kkiapayuser}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD:-kkiapay}
+      POSTGRES_DB: 'dbmt940'
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - intranet
+    restart: always
+
+  migrate:
+    build: .
+    container_name: migrate
+    depends_on:
+      - database
+    command: npm run db:migrate-up
+    environment:
+      - DATABASE_URL=postgresql://kkiapayuser:kkiapay@database:5432/dbmt940?schema=public
+    networks:
+      - intranet
+
+  backend:
+    build: .
+    container_name: backend
+    depends_on:
+      - database
+      - migrate
+    command: npm run start:prod
+    environment:
+      - APP_PORT=3000
+      - DATABASE_URL=postgresql://kkiapayuser:kkiapay@database:5432/dbmt940?schema=public
+      - FILE_REGEX_PATTERN=.*\.txt
+      - FILE_REGEX_FLAG=g
+      - PATH_TO_FOLDER=/usr/src/kkiapay/data
+      - LOG_LEVEL=debug
+    volumes:
+      - ./data:/usr/src/kkiapay/data
+    ports:
+      - 3000:3000
+    networks:
+      - intranet
+    restart: always
+
+volumes:
+  postgres: ~
+
+networks:
+  intranet:

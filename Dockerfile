@@ -10,4 +10,4 @@ COPY prisma/schema.prisma ./prisma/
 RUN npm run prisma:generate
 
 COPY . .
-RUN npm run build:prod
+RUN npm run build
