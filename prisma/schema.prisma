@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Statement {
+  id String @id @default(uuid())
+
+  transactionReference        String  @unique
+  relatedReference            String?
+  accountIdentification       String?
+  number                      Json?
+  statementDate               String
+  openingBalanceDate          String
+  closingBalanceDate          String
+  currency                    String
+  openingBalance              Int
+  closingBalance              Int
+  closingAvailableBalanceDate String
+  forwardAvailableBalanceDate String
+  closingAvailableBalance     Int
+  forwardAvailableBalance     Int
+  messageBlocks               Json?
+
+  transactions Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Transaction {
+  id String @id @default(uuid())
+
+  statementId String
+  statement   Statement @relation(fields: [statementId], references: [id])
+
+  date            String
+  entryDate       String
+  fundsCode       String
+  amount          Int
+  isReversal      Boolean
+  transactionType String
+  reference       String
+  bankReference   String  @unique
+  extraDetails    String
+  currency        String
+  details         String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
