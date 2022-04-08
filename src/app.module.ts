@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
@@ -5,12 +6,19 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaService } from './prisma.service';
 import { StatementService } from './statement.service';
+import { TransactionService } from './transaction.service';
 import { WatcherService } from './watcher.service';
 
 @Module({
-  imports: [EventEmitterModule.forRoot(), ConfigModule.forRoot()],
+  imports: [EventEmitterModule.forRoot(), ConfigModule.forRoot(), HttpModule],
   controllers: [AppController],
-  providers: [AppService, PrismaService, WatcherService, StatementService],
+  providers: [
+    AppService,
+    PrismaService,
+    WatcherService,
+    StatementService,
+    TransactionService,
+  ],
 })
 export class AppModule implements OnApplicationBootstrap {
   constructor(
