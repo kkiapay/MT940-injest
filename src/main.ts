@@ -8,6 +8,7 @@ async function bootstrap() {
         ? ['debug', 'error', 'warn']
         : ['error', 'warn'],
   });
+  console.log('ok');
   await app.listen(process.env.APP_PORT || 3000);
 }
 bootstrap();

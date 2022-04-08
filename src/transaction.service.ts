@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Prisma, Statement, Transaction } from '@prisma/client';
 import { IStatementQuery } from './app.types';
@@ -6,6 +6,8 @@ import { PrismaService } from './prisma.service';
 
 @Injectable()
 export class TransactionService {
+  private readonly logger: Logger = new Logger(TransactionService.name);
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly emitter: EventEmitter2,
@@ -20,7 +22,8 @@ export class TransactionService {
       },
     });
 
-    this.emitter.emit('transaction.created', newTransaction);
+    this.emitter.emit('transaction-created', newTransaction);
+    this.logger.debug('emit: transaction-created', newTransaction);
 
     return newTransaction;
   }
