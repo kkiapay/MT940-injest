@@ -1,15 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Prisma, Statement } from '@prisma/client';
+import { IStatementQuery } from './app.types';
 import { PrismaService } from './prisma.service';
 
 @Injectable()
 export class StatementService {
-  constructor(private readonly prismaService: PrismaService) {}
+  private readonly logger: Logger = new Logger(StatementService.name);
+
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly emitter: EventEmitter2,
+  ) {}
 
   async createStatement(
     statement: Prisma.StatementCreateInput,
   ): Promise<Statement> {
-    return this.prismaService.statement.create({
+    const newStatement = await this.prismaService.statement.create({
       data: {
         ...statement,
         transactions: {
@@ -20,10 +27,22 @@ export class StatementService {
         },
       },
     });
+
+    this.emitter.emit('statement-created', newStatement);
+    this.logger.debug('emit: statement-created', newStatement);
+    return newStatement;
   }
 
-  async getStatements(): Promise<Statement[]> {
+  async getStatements(query: IStatementQuery): Promise<Statement[]> {
     return this.prismaService.statement.findMany({
+      where: { ...query },
+      include: { transactions: true },
+    });
+  }
+
+  async getStatement(id: string): Promise<Statement> {
+    return this.prismaService.statement.findFirst({
+      where: { id },
       include: { transactions: true },
     });
   }
