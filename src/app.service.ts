@@ -25,7 +25,7 @@ export class AppService {
     try {
       this.logger.debug('File added: ' + data.content);
 
-      if (!this.statementService.isExistingStatement(data.path)) {
+      if (!(await this.statementService.isExistingStatement(data.path))) {
         const fileHash = hashFile(data.path);
         for (const statement of await mt940Parser(data.path)) {
           await this.statementService.createStatement({
