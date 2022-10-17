@@ -28,6 +28,7 @@ model Statement {
   closingAvailableBalance     Int
   forwardAvailableBalance     Int
   messageBlocks               Json?
+  fileHash String?
 
   transactions Transaction[]
 
