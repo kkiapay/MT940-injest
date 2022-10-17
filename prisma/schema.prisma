@@ -13,7 +13,7 @@ datasource db {
 model Statement {
   id String @id @default(uuid())
 
-  transactionReference        String  @unique
+  transactionReference        String  
   relatedReference            String?
   accountIdentification       String?
   number                      Json?
@@ -48,7 +48,7 @@ model Transaction {
   isReversal      Boolean
   transactionType String
   reference       String
-  bankReference   String  @unique
+  bankReference   String
   extraDetails    String
   currency        String
   details         String
