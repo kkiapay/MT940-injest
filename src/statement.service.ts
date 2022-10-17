@@ -59,11 +59,8 @@ export class StatementService {
 
   async isExistingStatement(path: string) {
     const hash = hashFile(path);
-    this.logger.debug('[hash]', hash);
-    const count = await this.prismaService.statement.count({
+    return !!(await this.prismaService.statement.findFirst({
       where: { fileHash: hash },
-    });
-    this.logger.debug('[count]', count);
-    return count !== 0;
+    }));
   }
 }
