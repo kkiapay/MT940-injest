@@ -1,3 +1,4 @@
+import { hashFile } from 'src/utils/hash';
 import { Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Prisma, Statement } from '@prisma/client';
@@ -54,5 +55,13 @@ export class StatementService {
       data: statements,
       skipDuplicates: true,
     });
+  }
+
+  async isExistingStatement(path: string) {
+    const hash = hashFile(path);
+    const count = await this.prismaService.statement.count({
+      where: { fileHash: hash },
+    });
+    return count !== 0;
   }
 }

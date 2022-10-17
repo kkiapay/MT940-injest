@@ -1,3 +1,4 @@
+import { hashFile } from 'src/utils/hash';
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -24,11 +25,15 @@ export class AppService {
     try {
       this.logger.debug('File added: ' + data.content);
 
-      for (const statement of await mt940Parser(data.path)) {
-        await this.statementService.createStatement(
-          statement as Prisma.StatementCreateInput,
-        );
-        this.logger.debug('parsing completed ' + JSON.stringify(statement));
+      if (!this.statementService.isExistingStatement(data.path)) {
+        const fileHash = hashFile(data.path);
+        for (const statement of await mt940Parser(data.path)) {
+          await this.statementService.createStatement({
+            ...statement,
+            fileHash,
+          } as Prisma.StatementCreateInput);
+          this.logger.debug('parsing completed ' + JSON.stringify(statement));
+        }
       }
 
       this.logger.debug('statements created');
