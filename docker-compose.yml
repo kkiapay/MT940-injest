@@ -39,6 +39,7 @@ services:
       - FILE_REGEX_FLAG=g
       - PATH_TO_FOLDER=/usr/src/kkiapay/data
       - LOG_LEVEL=debug
+      - CALLBACK_URLS=https://f714-154-66-136-126.eu.ngrok.io/supply-transaction/bank-transfer-webhook
     volumes:
       - ./data:/usr/src/kkiapay/data
     ports:
