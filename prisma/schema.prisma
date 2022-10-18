@@ -13,7 +13,7 @@ datasource db {
 model Statement {
   id String @id @default(uuid())
 
-  transactionReference        String  
+  transactionReference        String
   relatedReference            String?
   accountIdentification       String?
   number                      Json?
@@ -28,7 +28,8 @@ model Statement {
   closingAvailableBalance     Int
   forwardAvailableBalance     Int
   messageBlocks               Json?
-  fileHash String?
+  fileHash                    String?
+  details                     String?
 
   transactions Transaction[]
 
