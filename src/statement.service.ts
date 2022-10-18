@@ -29,8 +29,9 @@ export class StatementService {
       },
     });
 
-    this.emitter.emit('statement-created', newStatement);
-    this.logger.debug('emit: statement-created', newStatement);
+    this.emitter.emit('statement-created', statement);
+    this.logger.debug('emit: statement-created', statement);
+
     return newStatement;
   }
 
